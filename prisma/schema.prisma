@@ -134,6 +134,8 @@ enum Status {
 // From there, I'm able to see the same information Mosh
 // // finds in DataGrip under the "next-issue-tracker" DB!
 
+// Hop to "/app/api/issues/route.ts"
+
 // // // // // // // // // // // // // // // // // // // //
 
 // ORIGINAL CONTENTS:
