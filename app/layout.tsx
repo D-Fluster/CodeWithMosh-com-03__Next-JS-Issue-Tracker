@@ -1,6 +1,8 @@
+import "@radix-ui/themes/styles.css";
 import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { Theme } from "@radix-ui/themes";
 import NavBar from "./NavBar";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -18,8 +20,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <NavBar />
-        <main>{children}</main>
+        <Theme>
+          <NavBar />
+          <main>{children}</main>
+        </Theme>
       </body>
     </html>
   );
@@ -53,5 +57,12 @@ Mosh prefers to wrap the {children} portion of the <body>
 // more sematic (semantic?)
 
 Hop to "app/NavBar.tsx"
+
+// 
+// SETTING UP RADIX UI
+// https://youtu.be/J9sfR6HN6BY?2613
+// 
+
+See "app/issues/page.tsx"
 
 */
