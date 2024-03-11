@@ -7,6 +7,133 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Issue {
+  id          Int      @id @default(autoincrement())
+  title       String   @db.VarChar(255)
+  description String   @db.Text
+  status      Status   @default(OPEN)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+enum Status {
+  OPEN
+  IN_PROGRESS
+  CLOSED
+}
+
+// // // // // // // // // // // // // // // // // // // //
+
+// NOTES:
+
+// 
+// CREATING THE ISSUE MODEL
+// (CONTINUED from "app/NavBar.tsx")
+// https://youtu.be/J9sfR6HN6BY?t=1795
+// 
+
+// Eventually our Issue model is going to have various
+// // fields/properties, but at this point we only want to
+// // add the absolutely essential ones
+
+// Specifically, we aren't (yet) going to create a
+// // relationship between the Issue and User models, as
+// // we're not (yet) going to worry about the advanced
+// // elements like assigning issues to users
+
+//   id          Int      @id @default(autoincrement())
+// Every issue will need a unique ID, which we specify
+// // using the "@id" attribute
+// These IDs which will be of type "Int" for "integer"
+// Then we use the "@default" attribute to give it a
+// // default value and, within that, we use the
+// // "autoincrement()" function so that our database
+// // engine automatically assigns an ID to each record
+// // every time one is inserted into our table
+
+//   title       String   @db.VarChar(255)
+// The "title" field will have to be a "String" type
+// When using MySQL, the type of the related column in our
+// // database will be "varchar(191)" -- where "varchar"
+// // means "variable character" and the argument "191"
+// // means we can store string values with up to 191 
+// // characters in such columns
+// To instead override the default convention and store
+// // strings of up to 255 characters, we use the "@db"
+// // attribute to specify the type of underlying column
+// // in our database -- so here "@db.VarChar(255)"
+
+//   description String   @db.Text
+// Since this "description" string will also have a default
+// // column type of "varchar(191)" and we want it to be
+// // able to contain much longer text strings, we use the
+// // "@db.Text" attribute
+
+//   status      Status   @default(OPEN)
+// Every issue has to have a status, which can only be 1
+// // of 3 values: open, in-progress, or closed -- which 
+// // can be represented with an "enum," which is a set of
+// // constant values
+// By convention, we use all capital letters with "_" for
+// // spacing, and put each value on a separate line with
+// // no other separation (e.g., not followed by commas)
+// However, it's important to note that "enum"s are 
+// // supported in MySQL but not all database engines
+// Then, once we've set up our "enum", we can define the
+// // type for the "status" field as the enum "Status"
+// By default, we set this value to "OPEN" by specifying
+// // "@default(OPEN)"
+// After typing "@default" we can press Ctrl+Space to see
+// // all the possible values from the "enum":
+
+// enum Status {
+//   OPEN
+//   IN_PROGRESS
+//   CLOSED
+// }
+
+//   createdAt   DateTime @default(now())
+// We want to know when each issue is created, which must
+// // be of type "DateTime"
+// We give it a "@default" value using the "now()" function
+// // so every time a record is inserted into our table, we
+// // the current date & time is inserted into this column
+
+//   updatedAt   DateTime @updatedAt
+// Similarly, we want to include a field so we know when
+// // each issue was last updated, which will also be of
+// // type "DateTime"
+// For the value, we use a different attribute which is
+// // called "@updatedAt" so that every time an issue
+// // record is updated, the database engine will also
+// // automatically update the value of this column 
+
+// We can run "npx prisma format" in the Terminal to 
+// // reformat our code and make it even prettier
+
+// Then, we want to create and apply a migration, which we
+// // do by running "npx prisma migrate dev" in Terminal
+// // and give it a name like "initial migration" or
+// // something more specific like "create issue"
+
+// When we create a migration, Prisma creates a "migrations"
+// // folder within the "prisma" folder; and, for each
+// // migration, it creates a subfolder therein titled with
+// // a timestamp and the name of the migration; and,
+// // within that folder, there will be a "migration.sql"
+// // file that contains SQL instructions for creating or
+// // updating our database schema to match our models
+
+// To make sure that our database is migrated properly, we
+// // can go to Workbench/DataGrip
+
+// In Workbench, I click on the "Local Instance MySQL83"
+// // card under "MySQL Connections" on the "Welcome" page,
+// // then on the left-hand side toward the vertical middle,
+// // switch from the "Administration" tab to "Schemas"
+// From there, I'm able to see the same information Mosh
+// // finds in DataGrip under the "next-issue-tracker" DB!
+
 // // // // // // // // // // // // // // // // // // // //
 
 // ORIGINAL CONTENTS:

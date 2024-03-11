@@ -47,7 +47,8 @@ export default NavBar;
 /* NOTES:
 
 // 
-// BUILDING THE NAV BAR
+// BUILDING THE NAV BAR 
+// (CONTINUED from "app/layout.tsx")
 // https://youtu.be/J9sfR6HN6BY?t=660
 // 
 
@@ -269,16 +270,36 @@ Once we run this command, two things happen:
 // 1. Prisma creates its own "prisma" folder in the root
 // // directory (i.e., alongside the "app" folder), 
 // // which contains a "schema.prisma" file
+// 2. (???)
 
 In that "schema.prisma" file, we want to update the database
 // provider from "postresql" to "mysql" and the database
 // URL, which is an "environment (env) variable" that's
 // stored in the new ".env" file, which is also stored
-// directly alongside "app" in the root folder
+// directly alongside "app" in the project's root folder
 
-provider = "mysql"
-  url      = env("DATABASE_URL")
+    datasource db {
+    provider = "mysql"
+    url      = env("DATABASE_URL")
+    }
 
-// This also creates a 
+In the ".env" file, we update the DATABASE_URL variable to:
+
+    DATABASE_URL="mysql://root:(PASSWORD)@localhost:3306/(DATABASE NAME)"
+
+    // because the "root" username in MySQL is "root" and
+    // the MySQL port is 3306
+
+// 
+// CREATING THE ISSUE MODEL
+// https://youtu.be/J9sfR6HN6BY?t=1795
+// 
+
+To store issues in our database, we first need to create
+// a Prisma model, which we define in our "schema.prisma"
+// file using PascalCase (all first letters capitalized)
+// and singular names (e.g., "Issue" rather than "Issues")
+
+Hop to "/prisma/schema.prisma"
 
 */

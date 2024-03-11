@@ -34,8 +34,6 @@ export default function RootLayout({
 // https://youtu.be/J9sfR6HN6BY?t=660
 // 
 
-See "app/NavBar.tsx"
-
 We can build "NavBar.tsx" directly in our "app" folder,
 // rather than a separate "componets" folder/directory,
 // because we're using Next.JS 13 with the new App Router
@@ -53,5 +51,7 @@ In this case, our navigation bar will *not* be a reusable
 Mosh prefers to wrap the {children} portion of the <body>
 // element in their own <main> element to make the pages
 // more sematic (semantic?)
+
+Hop to "app/NavBar.tsx"
 
 */
