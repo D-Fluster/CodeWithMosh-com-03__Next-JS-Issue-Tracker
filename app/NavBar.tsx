@@ -75,8 +75,8 @@ Thus, to resolve this, we give the "UL" a "flex" class too;
 
 We can fix this spacing issue with another Tailwind class:
 // "space-x-#" where here Mosh is using the "space-x-6" 
-// class, though I've chosen "space-x-7" -- and I believe that
-// the "x" here indicates horizontal (x-axis) spacing only
+// class, though I've chosen "space-x-7" -- and that the 
+// "x" here indicates horizontal (x-axis) spacing only
 
 Next, we can apply the class "border-b" ("b" for "bottom")
 // to only the <nav> element to give it a bottom border
@@ -148,7 +148,10 @@ Updated in "return" portion of our function -- note that
         {links.map((link) => (
           <Link
             key={link.href}
-            className="text-zinc-700 hover:text-zinc-300 transition-colors"
+            className=
+                "text-zinc-700 
+                hover:text-zinc-300 
+                transition-colors"
             href={link.href}
           >
             {link.label}
@@ -231,5 +234,51 @@ So instead of the long <Link className> above, we call the
 This eliminates our string manipulation and make our code
 // cleaner and easier to read -- i.e., we can easily see
 // what classes are rendered under what conditions!
+
+// 
+// INSTALLING MySQL
+// https://youtu.be/J9sfR6HN6BY?t=1570
+// 
+
+MySQL is a very popular database engine, with some other
+// popular ones including MongoDB & PostgreSQL (Postgres)
+
+The free community version can be downloaded from:
+    https://dev.mysql.com/downloads/mysql/
+
+As this is just a database engine, or server, we'll also
+// need a tool for viewing our database; there is a free
+// MySQL Workbench for this, though Mosh uses DataGrip by
+// JetBrains (however, it's only free for 30 days):
+    https://dev.mysql.com/downloads/workbench/
+    https://www.jetbrains.com/datagrip/
+
+// 
+// SETTING UP PRISMA
+// https://youtu.be/J9sfR6HN6BY?t=1690
+// 
+
+To allow our application to interact with our database, we
+// next need to install Prisma using "npm i prisma@5.3.1" 
+// in the Terminal
+
+Then, to initialize Prisma in this project, we run:
+// "npx prisma init"
+
+Once we run this command, two things happen:
+// 1. Prisma creates its own "prisma" folder in the root
+// // directory (i.e., alongside the "app" folder), 
+// // which contains a "schema.prisma" file
+
+In that "schema.prisma" file, we want to update the database
+// provider from "postresql" to "mysql" and the database
+// URL, which is an "environment (env) variable" that's
+// stored in the new ".env" file, which is also stored
+// directly alongside "app" in the root folder
+
+provider = "mysql"
+  url      = env("DATABASE_URL")
+
+// This also creates a 
 
 */
