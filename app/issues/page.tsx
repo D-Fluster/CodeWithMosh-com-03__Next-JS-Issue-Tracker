@@ -1,11 +1,16 @@
+"use client";
+
 import React from "react";
 import { Button } from "@radix-ui/themes";
+import Link from "next/link";
 
 const IssuesPage = () => {
   return (
     <>
       <div>This is the Issues Page!</div>
-      <Button>New Issue</Button>
+      <Button>
+        <Link href="/issues/new">New Issue</Link>
+      </Button>
     </>
   );
 };
@@ -50,5 +55,23 @@ In the "return" portion of that function, we can add
 // something like:
 
     <Button>New Issue</Button>
+
+// 
+// BUILD THE "NEW ISSUE" PAGE
+// https://youtu.be/J9sfR6HN6BY?t=2765
+// 
+
+At this point, we're only focusing on the look & field of
+// this page, so we won't worry about submitting the form
+// or handling validation errors, but rather just building
+// a page that has two input fields (title & description)
+
+To add a link to our "New Issue" page, we place a <Link>
+// component inside our <Button> component instead of the
+// placeholder text -- specifically the <Link> component
+// defined in the "next/link" package, rather than the one
+// defined in "@radix-ui/themes"
+
+Hop to new "app/issues/new/page.tsx"
 
 */
