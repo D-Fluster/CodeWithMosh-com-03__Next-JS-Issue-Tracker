@@ -30,6 +30,19 @@ const NewIssuePage = () => {
   const [error, setError] = useState("");
   const [isSubmitting, setSubmitting] = useState(false);
 
+  const onSubmit = handleSubmit(async (data) => {
+    try {
+      setSubmitting(true);
+      await axios.post("/api/issues", data);
+      router.push("/issues");
+    } catch (error) {
+      setSubmitting(false);
+      setError(
+        "An unexpected error occurred. Please note, both an Issue Title and an Issue Description are required."
+      );
+    }
+  });
+
   return (
     <div className="max-w-xl space-y-3">
       {error && (
@@ -37,21 +50,7 @@ const NewIssuePage = () => {
           <Callout.Text>{error}</Callout.Text>
         </Callout.Root>
       )}
-      <form
-        className="space-y-3"
-        onSubmit={handleSubmit(async (data) => {
-          try {
-            setSubmitting(true);
-            await axios.post("/api/issues", data);
-            router.push("/issues");
-          } catch (error) {
-            setSubmitting(false);
-            setError(
-              "An unexpected error occurred. Please note, both an Issue Title and an Issue Description are required."
-            );
-          }
-        })}
-      >
+      <form className="space-y-3" onSubmit={onSubmit}>
         <TextField.Root>
           <TextField.Input placeholder="Issue Title" {...register("title")} />
         </TextField.Root>
@@ -650,5 +649,55 @@ Thus, we can add the "disabled" prop to the <Button> and
   <Button disabled={isSubmitting}>
     Submit New Issue {isSubmitting && <Spinner />}
   </Button>
+
+// 
+// DISCUSSION: CODE ORGANIZATION
+// https://youtu.be/J9sfR6HN6BY?t=5305
+// 
+
+While some SWEs argue that in-line functions should never
+// be used and should always be abstracted elsewhere, and
+// others argue that they should always be used for clarity
+// and to lessen back-and-forth efforts, Mosh uses the rule
+// of thumb that in-line functions should only be used if
+// they're 2 lines or less; here, our "handleSubmit"
+// function is 7+ lines long
+
+With that in mind, we'll pull out the <form onSubmit>
+// function rules and put them into their own const; this
+// way, the logic for what happens when we submit the form
+// is completely separated from our markup
+
+Additionally, some SWEs argue that using Axios or otherwise
+// making HTTP calls inside of / in the middle of a 
+// component violates the separation of concerns principle, 
+// an old CompSci principle which says that we should 
+// separate a program into distinct modules, each with 
+// their own "concern" -- because, if concerns are well 
+// separated, there are more opportunities for code reuse
+
+Rather, they would suggest moving the logic for
+// "await axios.post("/api/issues", data);" into a
+// separate function outside of this module, and then
+// call that function here -- e.g., we could have a
+// "createIssue()" function that takes the "data" as an
+// argument (i.e., "createIssue(data)") -- and in that
+// function we'd include the code for making the HTTP call
+
+However, in this case, Mosh finds it to be unnecessary
+// abstraction to move that logic into a separate function
+// in this particular application, as this is the only
+// place where we need to create an issue for this
+// application, meaning it won't be reused elsewhere
+
+With that said, in other applications, making HTTP calls
+// might be more complicated -- e.g., certain HTTP headers
+// must be included in each request when calling some
+// third-party APIs -- and in those cases, we wouldn't
+// want to throw all that complexity inside our components,
+// so it would make sense to create separate modules
+
+TL;DR: SWE isn't black-and-white, so there's no such thing
+// as a one-size-fits-all solution!
 
 */
