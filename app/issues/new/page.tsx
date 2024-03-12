@@ -12,6 +12,7 @@ import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import ErrorMessage from "@/app/components/ErrorMessage";
+import Spinner from "@/app/components/Spinner";
 
 type IssueForm = z.infer<typeof createIssueSchema>;
 
@@ -27,6 +28,7 @@ const NewIssuePage = () => {
   });
   // console.log(register("title"));
   const [error, setError] = useState("");
+  const [isSubmitting, setSubmitting] = useState(false);
 
   return (
     <div className="max-w-xl space-y-3">
@@ -39,9 +41,11 @@ const NewIssuePage = () => {
         className="space-y-3"
         onSubmit={handleSubmit(async (data) => {
           try {
+            setSubmitting(true);
             await axios.post("/api/issues", data);
             router.push("/issues");
           } catch (error) {
+            setSubmitting(false);
             setError(
               "An unexpected error occurred. Please note, both an Issue Title and an Issue Description are required."
             );
@@ -60,7 +64,9 @@ const NewIssuePage = () => {
           )}
         />
         <ErrorMessage>{errors.description?.message}</ErrorMessage>
-        <Button>Submit New Issue</Button>
+        <Button disabled={isSubmitting}>
+          Submit New Issue {isSubmitting && <Spinner />}
+        </Button>
       </form>
     </div>
   );
@@ -581,5 +587,68 @@ Once we've finalized our new <ErrorMessage> component and
 Note that we add the "optional chaining" singifier "?" 
 // after "title" and "description" because otherwise we get 
 // a compilation error, as these values may be undefined
+
+// 
+// ADDING A SPINNER
+// https://youtu.be/J9sfR6HN6BY?t=5045
+// 
+
+We can improve UX by showing a spinner on our "Submit"
+// button while the form is submitting, which we'll do 
+// with a Tailwind spinner element:
+
+    https://tw-elements.com/docs/react/components/spinners/
+
+PRO TIP: To rename many instances of the same word at once
+// without having to use Ctrl + D to individually select
+// each one, we can use the Shift + Ctrl + L shortcut --
+// however, it looks like that's also the shortcut to open
+// up Loom, so that's what it's doing here (':
+
+Hop to the new "app/components/Spinner.tsx"
+
+Once we've finalized our new <Spinner> component, we can
+// add it to our <Button> component; however, since we only
+// want the spinner to appear when the form is submitting,
+// we need to initialize another state variable,
+// "isSubmitting", with a default value of "false":
+
+  const [isSubmitting, setSubmitting] = useState(false);
+
+Then, in our "try" block, before we call the back end, we
+// want to set the "isSubmitting" state to "true" using the
+// "setSubmitting" function; and in our "catch" block, if
+// something goes wrong, we reset the "isSubmitting" state 
+// to "false" so the spinner doesn't stick around forever:
+
+  try {
+    setSubmitting(true);
+    await axios.post("/api/issues", data);
+    router.push("/issues");
+  } catch (error) {
+    setSubmitting(false);
+    setError(
+      "An unexpected error occurred. Please note, both an Issue Title and an Issue Description are required."
+    );
+  }
+
+Next, within our button, we want to check if "isSubmitting"
+// is truthy and only render the spinner if it is using
+// the logical && operator:
+
+  <Button>Submit New Issue 
+    {isSubmitting && <Spinner />}</Button>
+
+Finally, it's also good practice to disable the button
+// while the form is being submitted, in order to prevent 
+// the user from submitting the form multiple times --
+// which is especially important with money applications!
+
+Thus, we can add the "disabled" prop to the <Button> and
+// set it to "{isSubmitting}":
+
+  <Button disabled={isSubmitting}>
+    Submit New Issue {isSubmitting && <Spinner />}
+  </Button>
 
 */
