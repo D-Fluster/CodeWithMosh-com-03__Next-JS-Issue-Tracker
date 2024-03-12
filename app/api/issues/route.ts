@@ -1,13 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { z } from "zod";
 import { PrismaClient } from "@prisma/client";
+import { createIssueSchema } from "../../validationSchemas";
 
 const prisma = new PrismaClient()
-
-const createIssueSchema = z.object({
-    title: z.string().min(1, "An Issue Title is required.").max(255),
-    description: z.string().min(1, "An Issue Description is required."),
-});
 
 export async function POST(request: NextRequest) {
     const body = await request.json();
@@ -224,5 +219,47 @@ However, this technique is useful in situations where we
 // the error(s) to the user
 
 Hop back to "app/issues/new/page.tsx"
+
+// 
+// IMPLEMENT CLIENT-SIDE VALIDATION
+// https://youtu.be/J9sfR6HN6BY?t=4470
+// 
+
+Earlier, we defined the "createIssueSchema" schema for
+// validating the object that's sent with our request,
+// but now we'd like to reuse this same schema for
+// validating our form
+
+To make the schema reusable, we have to put it into a
+// separate module, which we'll then import in both places;
+// however, manually cutting & pasting it would break our
+// code, so we can instead use VS Code's built-in
+// "Refactor" option
+
+To do so, we set our cursor on the word "createIssueSchema"
+// in our code, right-click and choose "Refactor", then
+// select the "Move to a new file" option; this will
+// simultaneously import it from the new location:
+
+    import { createIssueSchema } from 
+        "./createIssueSchema";
+
+However, by default this has been created here in our
+// "app/api/issues" folder, but we want to use it more
+// generally in our program so we can pull it out and move
+// it to the "app" folder in the root directory; again,
+// this automatically updates our import line as:
+
+    import { createIssueSchema } from 
+        "../../createIssueSchema";
+
+Mosh also recommends renaming this file so it can be used
+// more generally for all of our validation schemas,
+// which also automatically updates the import line!
+
+    import { createIssueSchema } from 
+        "../../validationSchemas";
+
+Hop to "app/issues/new/page.tsx"
 
 */

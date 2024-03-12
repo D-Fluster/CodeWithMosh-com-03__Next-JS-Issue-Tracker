@@ -1,22 +1,29 @@
 "use client";
 
-import { Button, Callout, TextArea, TextField } from "@radix-ui/themes";
+import axios from "axios";
 import React from "react";
 import SimpleMDE from "react-simplemde-editor";
 import "easymde/dist/easymde.min.css";
+import { Button, Callout, Text, TextArea, TextField } from "@radix-ui/themes";
+import { createIssueSchema } from "@/app/validationSchemas";
 import { useForm, Controller } from "react-hook-form";
-import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 
-interface IssueForm {
-  title: string;
-  description: string;
-}
+type IssueForm = z.infer<typeof createIssueSchema>;
 
 const NewIssuePage = () => {
   const router = useRouter();
-  const { register, control, handleSubmit } = useForm<IssueForm>();
+  const {
+    register,
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<IssueForm>({
+    resolver: zodResolver(createIssueSchema),
+  });
   // console.log(register("title"));
   const [error, setError] = useState("");
 
@@ -43,6 +50,11 @@ const NewIssuePage = () => {
         <TextField.Root>
           <TextField.Input placeholder="Issue Title" {...register("title")} />
         </TextField.Root>
+        {errors.title && (
+          <Text color="red" as="p">
+            {errors.title.message}
+          </Text>
+        )}
         <Controller
           name="description"
           control={control}
@@ -50,6 +62,11 @@ const NewIssuePage = () => {
             <SimpleMDE placeholder="Issue Description" {...field} />
           )}
         />
+        {errors.description && (
+          <Text color="red" as="p">
+            {errors.description.message}
+          </Text>
+        )}
         <Button>Submit New Issue</Button>
       </form>
     </div>
@@ -435,5 +452,116 @@ In playing with the spacing, we can use the "space-y-#"
 // to the <form> element, otherwise it defaults back to 0;
 // alternatively, we could add a bottom margin like "mb-5"
 // to the <Callout.Root> component
+
+Next section begins in "app/api/issues.route.ts"
+
+// 
+// IMPLEMENT CLIENT-SIDE VALIDATION
+// (CONTINUED from "app/api/issues.route.ts")
+// https://youtu.be/J9sfR6HN6BY?t=4470
+// 
+
+To use the "createIssueSchema" schema in our form here as
+// well, we'll need to install the following package,
+// which allows React Hook Form to integrate with various
+// data validation libraries, such as Zod:
+
+  "npm i @hookform/resolvers@3.3.1"
+
+Next, we import it herein at the top using:
+
+  import { zodResolver } from "@hookform/resolvers/zod";
+
+Then, when we call the "useForm()" hook, we'll need to
+// pass a configuration object and set the "resolver"
+// to "zodResolver()" and pass it our Zod schema, i.e.
+// "createIssueSchema", which will then also be imported:
+
+  import { createIssueSchema } from "@/app/validationSchemas";
+
+  ...
+
+  const { register, control, handleSubmit } = 
+    useForm<IssueForm>({
+      resolver: zodResolver(createIssueSchema),
+    });
+
+And this is how we can integrate React Hook Forms with Zod!
+
+Next, taking a look at our "interface IssueForm", it seems
+// a bit redundant, as these are the same fields we're
+// validating using the schema above; if we ever add more
+// more properties/fields to our form, we'd have to update
+// both this interface and the schema separately (not DRY!)
+
+However, we can generate this interface automatically
+// based on our schema! To do so, we first import:
+
+  import { z } from "zod";
+
+Then, we remove the original "interface" and instead call
+// "z.infer" and pass it our schema in angle brackets:
+
+  z.infer<typeof createIssueSchema>;
+
+This will return a "type", so we store it in a "type"
+// object and call it "IssueForm" like the old interface:
+
+  type IssueForm = z.infer<typeof createIssueSchema>;
+
+This enables Zod to infer the interface(?) type for us,
+// based on our schema
+
+Now that we've integrated React Hook Forms with Zod, we can
+// display validation errors by grabbing the "formState"
+// object from the "useForm" hook; the "formState" object
+// represents everything we need to know about our form,
+// and we can destructure it and press Ctrl + Space to see
+// the many properties it contains
+
+It contains an "errors" property, which we'll use here, as
+// well as "isDirty" (which is useful to know if the form 
+// has changed), "isValid" (which is useful if you want
+// to disable the "Submit" button if the form fields are
+// not valid), "isSubmitted", etc.
+
+  const {
+    register,
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<IssueForm>({
+    resolver: zodResolver(createIssueSchema),
+  });
+
+We can use this to render an error message just after each
+// field by rendering an error message component if, e.g.
+// "errors.title" is truthy (i.e., the "title" form field
+// has at least one error)
+
+While we can use a <p>aragraph element to do so, we want
+// to be consistent in our UI so we use the Radix UI
+// <Text> component, which will be auto-imported with use:
+
+For the title, just after </TextField.Root> we add:
+
+  {errors.title && <Text color="red">
+    {errors.title.message}</Text>}
+
+For the description, just after <Controller /> we add:
+
+  {errors.description && (
+    <Text color="red">{errors.description.message}</Text>
+  )}
+
+However, there is a styling issue because the <Text>
+// component is not a block-level element; rather, we can
+// see it's being rendered as a <span>
+
+Thus, we use the "as" prop of the <Text> component to set
+// this to the type of element that should be rendered
+// for each error message; here we'll use "p"aragrah:
+
+  <Text color="red" as="p">
 
 */
