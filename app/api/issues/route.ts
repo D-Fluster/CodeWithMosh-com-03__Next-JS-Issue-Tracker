@@ -5,8 +5,8 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient()
 
 const createIssueSchema = z.object({
-    title: z.string().min(1).max(255),
-    description: z.string().min(1)
+    title: z.string().min(1, "An Issue Title is required.").max(255),
+    description: z.string().min(1, "An Issue Description is required."),
 });
 
 export async function POST(request: NextRequest) {
@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
     const validation = createIssueSchema.safeParse(body);
     
     if (!validation.success)
-        return NextResponse.json(validation.error.errors, { status: 400})
+        return NextResponse.json(validation.error.format(), { status: 400})
 
     const newIssue = await prisma.issue.create({
         data: {title: body.title, description: body.description}
@@ -181,5 +181,48 @@ Sample successful request with status 201 ("Created"):
 Finally, we can view/refresh our MySQL Workbench to view
 // this new issue and its associated ID, title,
 // description, status, and created & updated timestamps!
+
+// 
+// HANDLING ERRORS
+// (CONTINUED from "app/issues/new/page.tsx")
+// https://youtu.be/J9sfR6HN6BY?t=4060
+// 
+
+We can make errors more user-friendly with a simpler
+// structure by using "validation.error.format()" instead 
+// of "validation.error.errors", though for some reason
+// in testing this on my end I'm no longer getting the
+// AxiosError that I was before -- aha! Because I needed
+// to add a "console.log(error)" to the "catch" block!
+
+What it's supposed to do is reformat the "_errors"
+// properties to be in plain English; these error messages
+// can also be customized by adding another argument to
+// the functions in our schema (the Zod object herein):
+
+    const createIssueSchema = z.object({
+        title: z.string().min(1, 
+            "An Issue Title is required.").max(255),
+        description: z.string().min(1, 
+            "An Issue Description is required."),
+    });
+
+In this case, we shouldn't be able to post the form if the
+// form contents are invalid, so we'll implement client-
+// side validation and show an error to the user if their
+// form is invalid
+
+However, this technique is useful in situations where we
+// have to rely on the back-end to validate the data --
+// e.g., if this was a form to register with a website,
+// we'll want to make sure the user has chosen a unique
+// username (i.e., that's not already taken), which can't
+// be validated on the client side; for cases like that,
+// where we have to rely on the back-end for validation,
+// we can use this method (AxiosError reading?) to read the
+// error messages returned from the server and then show 
+// the error(s) to the user
+
+Hop back to "app/issues/new/page.tsx"
 
 */
