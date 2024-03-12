@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import ErrorMessage from "@/app/components/ErrorMessage";
 
 type IssueForm = z.infer<typeof createIssueSchema>;
 
@@ -50,11 +51,7 @@ const NewIssuePage = () => {
         <TextField.Root>
           <TextField.Input placeholder="Issue Title" {...register("title")} />
         </TextField.Root>
-        {errors.title && (
-          <Text color="red" as="p">
-            {errors.title.message}
-          </Text>
-        )}
+        <ErrorMessage>{errors.title?.message}</ErrorMessage>
         <Controller
           name="description"
           control={control}
@@ -62,11 +59,7 @@ const NewIssuePage = () => {
             <SimpleMDE placeholder="Issue Description" {...field} />
           )}
         />
-        {errors.description && (
-          <Text color="red" as="p">
-            {errors.description.message}
-          </Text>
-        )}
+        <ErrorMessage>{errors.description?.message}</ErrorMessage>
         <Button>Submit New Issue</Button>
       </form>
     </div>
@@ -563,5 +556,30 @@ Thus, we use the "as" prop of the <Text> component to set
 // for each error message; here we'll use "p"aragrah:
 
   <Text color="red" as="p">
+
+// 
+// EXTRACTING THE ERROR MESSAGE COMPONENT
+// https://youtu.be/J9sfR6HN6BY?t=4840
+// 
+
+As it stands, every time we render an error we need to
+// include a conditional statement about when to render it
+// as well as the "color" and "as" properties
+
+To minimize duplication efforts, we can instead extract
+// this into its own custom, reusable component
+
+Hop to the new "app/components/ErrorMessage.tsx"
+
+Once we've finalized our new <ErrorMessage> component and
+// moved the responsibility for checking whether an error
+// exists therein as well, we can simplify our error
+// messaging code herein to simply: 
+
+  <ErrorMessage>{errors.title?.message}</ErrorMessage>
+
+Note that we add the "optional chaining" singifier "?" 
+// after "title" and "description" because otherwise we get 
+// a compilation error, as these values may be undefined
 
 */
