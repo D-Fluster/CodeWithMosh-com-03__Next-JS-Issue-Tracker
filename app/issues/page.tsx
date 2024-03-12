@@ -1,15 +1,17 @@
 "use client";
 
 import React from "react";
-import { Button } from "@radix-ui/themes";
+import { Button, Text } from "@radix-ui/themes";
 import Link from "next/link";
 
 const IssuesPage = () => {
   return (
     <>
-      <div>This is the Issues Page!</div>
+      <Text as="div" className="text-emerald-500" mb="5" size="5">
+        This is the Issues Page!
+      </Text>
       <Button>
-        <Link href="/issues/new">New Issue</Link>
+        <Link href="/issues/new">Report a New Issue</Link>
       </Button>
     </>
   );
