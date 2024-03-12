@@ -2,6 +2,8 @@
 
 import { Button, TextArea, TextField } from "@radix-ui/themes";
 import React from "react";
+import SimpleMDE from "react-simplemde-editor";
+import "easymde/dist/easymde.min.css";
 
 const NewIssuePage = () => {
   return (
@@ -9,7 +11,7 @@ const NewIssuePage = () => {
       <TextField.Root>
         <TextField.Input placeholder="Issue Title" />
       </TextField.Root>
-      <TextArea placeholder="Issue Description" />
+      <SimpleMDE placeholder="Issue Description" />
       <Button>Submit New Issue</Button>
     </div>
   );
@@ -74,5 +76,44 @@ Adding this to our <div> places the single- and multi-line
 // vertical spacing class "space-y-3" to our <div> container
 
 Hop to "app/layout.tsx"
+
+// 
+// ADDING A MARKDOWN EDITOR
+// https://youtu.be/J9sfR6HN6BY?=3416
+// 
+
+Now we're going to replace the <TextArea> component with a
+// full Markdown editor using a component called "React
+// Simple MD Editor" from NPM:
+
+  https://www.npmjs.com/package/react-simplemde-editor
+
+For a live demo, see also:
+  https://react-simplemde-edtior.netlify.app/
+
+This is a React component wrapper around EasyMDE, a
+// popular JS library for rendering a MarkDown (MD) editor
+
+First, we install EasyMDE as well as the React SimpleMDE
+// by running the following in the Terminal:
+
+  "npm install --save react-simplemde-editor easymde"
+
+Once installed, we import the SimpleMDE component and its
+// corresponding CSS file using:
+
+  import SimpleMDE from "react-simplemde-editor";
+  import "easymde/dist/easymde.min.css";
+
+Finally, we just replace the <TextArea> component with the
+// a <SimpleMDE> component!
+
+At this point, we can remove the import of both "React"
+// and "TextArea," but I'm leaving them in for my clarity
+
+It's important to note that the MDE is fully customizable;
+// you can change which buttons are on the toolbar, 
+// whether spellcheck is enabled by default, etc. -- but
+// since Mosh won't go into that, we can use their docs
 
 */

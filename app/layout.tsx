@@ -146,4 +146,6 @@ Oddly enough, this *only* worked for me if I left the
 // or without including the "display: 'swap'," line in the
 // "const inter" declaration, which Mosh did not include
 
+Hop to "app/issues/new/page.tsx"
+
 */
