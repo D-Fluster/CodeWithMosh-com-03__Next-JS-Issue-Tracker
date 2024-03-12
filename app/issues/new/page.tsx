@@ -27,6 +27,11 @@ export default NewIssuePage;
 // https://youtu.be/J9sfR6HN6BY?t=2765
 // 
 
+At this point, we're only focusing on the look & field of
+// this page, so we won't worry about submitting the form
+// or handling validation errors, but rather just building
+// a page that has two input fields (title & description)
+
 Similar to what we did with Bootstrap, we can check the
 // Radix documentation to find the base code for a
 // Text Field, for example:
@@ -67,5 +72,7 @@ After the "Title" input field, we want to add a "Text Area"
 Adding this to our <div> places the single- and multi-line
 // text boxes right on top of each other, so we can add the
 // vertical spacing class "space-y-3" to our <div> container
+
+Hop to "app/layout.tsx"
 
 */

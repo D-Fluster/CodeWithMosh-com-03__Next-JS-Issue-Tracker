@@ -1,11 +1,16 @@
 import "@radix-ui/themes/styles.css";
+import "./theme-config.css";
 import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { Theme } from "@radix-ui/themes";
+import { Theme, ThemePanel } from "@radix-ui/themes";
 import NavBar from "./NavBar";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-inter",
+});
 
 export const metadata: Metadata = {
   title: "Dani's Issue Tracker",
@@ -20,7 +25,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Theme>
+        <Theme
+          appearance="light"
+          accentColor="purple"
+          radius="large"
+          scaling="110%"
+        >
           <NavBar />
           <main className="p-5">{children}</main>
         </Theme>
@@ -64,5 +74,76 @@ Hop to "app/NavBar.tsx"
 // 
 
 See "app/issues/page.tsx"
+
+// 
+// CUSTOMIZING THE RADIX UI THEME
+// https://youtu.be/J9sfR6HN6BY?t=3065
+// 
+
+One of the great things about Radix UI is that we can use a
+// built-in "<ThemePanel />" GUI to preview and customize
+// our theme! From there, we can use the "Copy Theme"
+// button to get an updated <Theme> tag with the selected
+// properties -- e.g., "appearance" & "accentColor":
+
+  Mosh's:
+  <Theme appearance="light" accentColor="violet">
+
+  Mine:
+    <Theme
+      appearance="light"
+      accentColor="purple"
+      radius="large"
+      scaling="110%">
+
+At this point, if we inspect the font-face we'll see that
+// we're not actually using the Google Inter font we've
+// specified here with Next, but rather the system default
+// because that'll override preferences due to Radix
+
+To resolve this, we can follow the instructions in the Radix
+// docs for Themes > Typography > With "next/font":
+
+  https://www.radix-ui.com/themes/docs/theme/typography#with-nextfont
+
+We'll do this by assigning a custom CSS variable to the 
+// "Inter" font, so instead of just:
+
+  import { Inter } from "next/font/google";
+
+  const inter = Inter({ subsets: ["latin"] });
+
+  // we'll add this to our const declaration:
+
+  const inter = Inter({
+    subsets: ["latin"],
+    display: "swap",
+    variable: "--font-inter",
+  });
+
+Mosh mentions that he explains setting the variable to a
+// custom CSS property in the first part of this course
+
+Next, we need to add the className "{inter.variable}" to the
+// <body> element of our RootLayout function (i.e., here),
+// whereas by default it's set to "{inter.className}" 
+
+Note that the Radix instructions change the className of the
+// <HTML> element, but we're updating the <body> element
+// because here the font is applied to our body element
+
+Finally, we add some custom CSS to override the default in
+// a new file "app/theme-config.css", then we import that
+// herein (i.e., into our RootLayout) just after the general
+// RadixUI CSS but before our Globals CSS file
+
+Oddly enough, this *only* worked for me if I left the
+// className as "{inter.className}" in the <body> element;
+// adding "className={inter.variable}" to the <HTML>
+// element changed the font from the system default to
+// something else, but not the Inter font; and updating
+// the <body> className appeared to have no impact -- with
+// or without including the "display: 'swap'," line in the
+// "const inter" declaration, which Mosh did not include
 
 */

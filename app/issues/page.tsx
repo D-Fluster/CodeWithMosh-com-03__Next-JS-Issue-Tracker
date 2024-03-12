@@ -61,11 +61,6 @@ In the "return" portion of that function, we can add
 // https://youtu.be/J9sfR6HN6BY?t=2765
 // 
 
-At this point, we're only focusing on the look & field of
-// this page, so we won't worry about submitting the form
-// or handling validation errors, but rather just building
-// a page that has two input fields (title & description)
-
 To add a link to our "New Issue" page, we place a <Link>
 // component inside our <Button> component instead of the
 // placeholder text -- specifically the <Link> component
