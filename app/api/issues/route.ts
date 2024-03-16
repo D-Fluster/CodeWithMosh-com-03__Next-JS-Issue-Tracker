@@ -2,14 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { createIssueSchema } from "../../validationSchemas";
 
-const prisma = new PrismaClient()
+const prisma = new PrismaClient();
 
 export async function POST(request: NextRequest) {
     const body = await request.json();
     const validation = createIssueSchema.safeParse(body);
     
     if (!validation.success)
-        return NextResponse.json(validation.error.format(), { status: 400})
+        return NextResponse.json(validation.error.format(), { status: 400 })
 
     const newIssue = await prisma.issue.create({
         data: {title: body.title, description: body.description}
@@ -144,6 +144,9 @@ However, according to TabNine, "prisma.issue" cannot be
 
     import { PrismaClient } from "@prisma/client";
     const prisma = new PrismaClient()
+
+Update 3/15: Posted to JOC Discord per request:
+    https://discord.com/channels/728714241242169406/929122266741080144/1218372104093831341
 
 Finally, we return this to the client by "return"ing a
 // "NextResponse.json()" with "newIssue" as the first
