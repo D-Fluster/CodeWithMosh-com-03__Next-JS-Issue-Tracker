@@ -73,7 +73,7 @@ The result of that function call will return a schema,
 
     const createIssueSchema = z.object({
         title: z.string().min(1).max(255),
-        describe: z.string().min(1)
+        description: z.string().min(1)
     });
 
 Now that we have this schema, we can use it to validate the
@@ -95,7 +95,7 @@ Next, we check if the validation is successful; if not,
     if (!validation.success)
         return NextResponse.json(
             validation.error.errors, 
-            { status: 400})
+            { status: 400 })
 
 Otherwise, if the request *is* valid, we should store this
 // new issue in our database -- and to do this, we'll need
